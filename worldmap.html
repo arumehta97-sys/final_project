@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birth Rate Changes: 2013 vs 2023 - D3 Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        select, input {
+            padding: 8px 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        select:hover, input:hover {
+            border-color: #667eea;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        #chart {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        .bar {
+            transition: opacity 0.3s, fill 0.3s;
+            cursor: pointer;
+        }
+        
+        .bar:hover {
+            opacity: 0.8;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            pointer-events: none;
+            font-size: 13px;
+            line-height: 1.6;
+            z-index: 1000;
+            max-width: 280px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            border: 2px solid #667eea;
+        }
+
+        .tooltip strong {
+            color: #667eea;
+            font-size: 14px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .axis-label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .axis text {
+            font-size: 12px;
+        }
+
+        .axis path,
+        .axis line {
+            stroke: #34495e;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #7f8c8d;
+        }
+
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 Global Birth Rate Evolution</h1>
+        <p class="subtitle">Comparing Birth Rates per 1,000 People: 2013 vs 2023</p>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="sortBy">📊 Sort by:</label>
+                <select id="sortBy">
+                    <option value="change">Largest Change</option>
+                    <option value="2013">Highest 2013 Rate</option>
+                    <option value="2023">Highest 2023 Rate</option>
+                    <option value="name">Country Name (A-Z)</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="topN">🔢 Show Top:</label>
+                <input type="number" id="topN" min="5" max="50" value="20" style="width: 80px;">
+            </div>
+            
+            <div class="control-group">
+                <label for="searchCountry">🔍 Search:</label>
+                <input type="text" id="searchCountry" placeholder="Type country name..." style="width: 200px;">
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">Loading data...</div>
+        <div id="chart"></div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e74c3c;"></div>
+                <span>2013 Birth Rate</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3498db;"></div>
+                <span>2023 Birth Rate</span>
+            </div>
+        </div>
+        
+        <div class="stats" id="stats"></div>
+    </div>
+
+    <script>
+        // Main visualization code
+        async function loadData() {
+            try {
+                // Load CSV file
+                const data = await d3.csv('world_data_clean.csv');
+                
+                // Filter and process data
+                const processedData = data
+                    .filter(d => d.birth_rate_2013 && d.birth_rate_2023)
+                    .map(d => ({
+                        country: d['Country Name'],
+                        rate2013: +d.birth_rate_2013,
+                        rate2023: +d.birth_rate_2023,
+                        change: +d.birth_rate_2023 - +d.birth_rate_2013
+                    }));
+                
+                console.log(`Loaded ${processedData.length} countries`);
+                return processedData;
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').innerHTML = 
+                    '<div class="error">❌ Error loading data. Make sure world_data_clean.csv is in the same folder as this HTML file.</div>';
+                throw error;
+            }
+        }
+
+        async function createVisualization() {
+            let allData;
+            
+            try {
+                allData = await loadData();
+                document.getElementById('loading').style.display = 'none';
+            } catch (error) {
+                return;
+            }
+            
+            // Set up dimensions
+            const margin = {top: 20, right: 150, bottom: 100, left: 220};
+            const width = 1200 - margin.left - margin.right;
+            const barHeight = 30;
+            const gap = 8;
+            
+            // Create tooltip
+            const tooltip = d3.select('body').append('div')
+                .attr('class', 'tooltip')
+                .style('opacity', 0);
+            
+            function updateChart() {
+                // Get control values
+                const sortBy = document.getElementById('sortBy').value;
+                const topN = +document.getElementById('topN').value;
+                const searchTerm = document.getElementById('searchCountry').value.toLowerCase();
+                
+                // Filter data based on search
+                let filteredData = searchTerm 
+                    ? allData.filter(d => d.country.toLowerCase().includes(searchTerm))
+                    : allData;
+                
+                // Sort data
+                if (sortBy === 'change') {
+                    filteredData.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+                } else if (sortBy === '2013') {
+                    filteredData.sort((a, b) => b.rate2013 - a.rate2013);
+                } else if (sortBy === '2023') {
+                    filteredData.sort((a, b) => b.rate2023 - a.rate2023);
+                } else {
+                    filteredData.sort((a, b) => a.country.localeCompare(b.country));
+                }
+                
+                // Take top N
+                const data = filteredData.slice(0, topN);
+                
+                if (data.length === 0) {
+                    document.getElementById('chart').innerHTML = 
+                        '<div class="loading">No countries found matching your search.</div>';
+                    return;
+                }
+                
+                // Update stats
+                updateStats(data);
+                
+                // Calculate height based on data length
+                const height = data.length * (barHeight + gap) + margin.bottom;
+                
+                // Clear previous chart
+                d3.select('#chart').selectAll('*').remove();
+                
+                // Create SVG
+                const svg = d3.select('#chart')
+                    .append('svg')
+                    .attr('width', width + margin.left + margin.right)
+                    .attr('height', height + margin.top);
+                
+                const g = svg.append('g')
+                    .attr('transform', `translate(${margin.left},${margin.top})`);
+                
+                // Create scales
+                const maxRate = d3.max(data, d => Math.max(d.rate2013, d.rate2023));
+                const x = d3.scaleLinear()
+                    .domain([0, maxRate * 1.05])
+                    .range([0, width]);
+                
+                const y = d3.scaleBand()
+                    .domain(data.map(d => d.country))
+                    .range([0, data.length * (barHeight + gap)])
+                    .padding(0.15);
+                
+                // Add X axis
+                const xAxis = g.append('g')
+                    .attr('class', 'axis')
+                    .attr('transform', `translate(0,${data.length * (barHeight + gap)})`)
+                    .call(d3.axisBottom(x).ticks(10));
+                
+                // Add X axis label
+                g.append('text')
+                    .attr('class', 'axis-label')
+                    .attr('x', width / 2)
+                    .attr('y', data.length * (barHeight + gap) + 50)
+                    .attr('text-anchor', 'middle')
+                    .text('Birth Rate (per 1,000 people)');
+                
+                // Add Y axis
+                const yAxis = g.append('g')
+                    .attr('class', 'axis')
+                    .call(d3.axisLeft(y));
+                
+                // Create groups for each country
+                const countries = g.selectAll('.country-group')
+                    .data(data)
+                    .join('g')
+                    .attr('class', 'country-group')
+                    .attr('transform', d => `translate(0,${y(d.country)})`);
+                
+                // Add 2013 bars (top half)
+                countries.append('rect')
+                    .attr('class', 'bar bar-2013')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('width', 0)
+                    .attr('height', barHeight / 2 - 2)
+                    .attr('fill', '#e74c3c')
+                    .on('mouseover', function(event, d) {
+                        d3.select(this).style('opacity', 0.7);
+                        tooltip.transition().duration(200).style('opacity', 1);
+                        tooltip.html(`
+                            <strong>${d.country}</strong><br/>
+                            2013 Birth Rate: <strong>${d.rate2013.toFixed(2)}</strong> per 1,000<br/>
+                        `)
+                        .style('left', (event.pageX + 15) + 'px')
+                        .style('top', (event.pageY - 28) + 'px');
+                    })
+                    .on('mouseout', function() {
+                        d3.select(this).style('opacity', 1);
+                        tooltip.transition().duration(300).style('opacity', 0);
+                    })
+                    .transition()
+                    .duration(800)
+                    .attr('width', d => x(d.rate2013));
+                
+                // Add 2023 bars (bottom half)
+                countries.append('rect')
+                    .attr('class', 'bar bar-2023')
+                    .attr('x', 0)
+                    .attr('y', barHeight / 2 + 2)
+                    .attr('width', 0)
+                    .attr('height', barHeight / 2 - 2)
+                    .attr('fill', '#3498db')
+                    .on('mouseover', function(event, d) {
+                        d3.select(this).style('opacity', 0.7);
+                        tooltip.transition().duration(200).style('opacity', 1);
+                        tooltip.html(`
+                            <strong>${d.country}</strong><br/>
+                            2023 Birth Rate: <strong>${d.rate2023.toFixed(2)}</strong> per 1,000<br/>
+                            Change: <strong style="color: ${d.change > 0 ? '#27ae60' : '#e74c3c'}">${d.change > 0 ? '+' : ''}${d.change.toFixed(2)}</strong>
+                        `)
+                        .style('left', (event.pageX + 15) + 'px')
+                        .style('top', (event.pageY - 28) + 'px');
+                    })
+                    .on('mouseout', function() {
+                        d3.select(this).style('opacity', 1);
+                        tooltip.transition().duration(300).style('opacity', 0);
+                    })
+                    .transition()
+                    .duration(800)
+                    .delay(200)
+                    .attr('width', d => x(d.rate2023));
+                
+                // Add value labels for 2023
+                countries.append('text')
+                    .attr('x', d => x(d.rate2023) + 5)
+                    .attr('y', barHeight / 2 + 2)
+                    .attr('dy', '1em')
+                    .text(d => d.rate2023.toFixed(1))
+                    .style('font-size', '11px')
+                    .style('fill', '#2c3e50')
+                    .style('font-weight', '600')
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(600)
+                    .delay(1000)
+                    .style('opacity', 1);
+                
+                // Add change indicators
+                countries.append('text')
+                    .attr('x', width + 15)
+                    .attr('y', barHeight / 2)
+                    .attr('dy', '0.35em')
+                    .text(d => `${d.change > 0 ? '▲' : '▼'} ${Math.abs(d.change).toFixed(1)}`)
+                    .style('font-size', '12px')
+                    .style('fill', d => d.change > 0 ? '#27ae60' : '#e74c3c')
+                    .style('font-weight', 'bold')
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(600)
+                    .delay(1200)
+                    .style('opacity', 1);
+            }
+            
+            function updateStats(data) {
+                const avg2013 = d3.mean(data, d => d.rate2013);
+                const avg2023 = d3.mean(data, d => d.rate2023);
+                const avgChange = d3.mean(data, d => d.change);
+                const largest = data.reduce((max, d) => 
+                    Math.abs(d.change) > Math.abs(max.change) ? d : max
+                );
+                
+                const numIncreases = data.filter(d => d.change > 0).length;
+                const numDecreases = data.filter(d => d.change < 0).length;
+                
+                const statsHtml = `
+                    <div class="stat-box">
+                        <div class="stat-label">📊 Avg Birth Rate 2013</div>
+                        <div class="stat-value" style="color: #e74c3c;">${avg2013.toFixed(1)}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">📊 Avg Birth Rate 2023</div>
+                        <div class="stat-value" style="color: #3498db;">${avg2023.toFixed(1)}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">📉 Average Change</div>
+                        <div class="stat-value" style="color: ${avgChange < 0 ? '#e74c3c' : '#27ae60'}">
+                            ${avgChange > 0 ? '+' : ''}${avgChange.toFixed(1)}
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">🏆 Largest Change</div>
+                        <div class="stat-value" style="font-size: 1.3em; line-height: 1.3;">
+                            ${largest.country}
+                        </div>
+                        <div style="font-size: 0.9em; color: ${largest.change < 0 ? '#e74c3c' : '#27ae60'}; margin-top: 5px;">
+                            ${largest.change > 0 ? '+' : ''}${largest.change.toFixed(1)}
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">⬆️ Countries Increasing</div>
+                        <div class="stat-value" style="color: #27ae60;">${numIncreases}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">⬇️ Countries Decreasing</div>
+                        <div class="stat-value" style="color: #e74c3c;">${numDecreases}</div>
+                    </div>
+                `;
+                
+                document.getElementById('stats').innerHTML = statsHtml;
+            }
+            
+            // Initial chart
+            updateChart();
+            
+            // Add event listeners
+            document.getElementById('sortBy').addEventListener('change', updateChart);
+            document.getElementById('topN').addEventListener('input', updateChart);
+            document.getElementById('searchCountry').addEventListener('input', updateChart);
+        }
+        
+        // Initialize visualization when page loads
+        createVisualization();
+    </script>
+</body>
+</html>

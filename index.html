@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Predicting Economic Growth and Financial Stability Across Economies</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <h1 class="project-title">Predicting Economic Growth and Financial Stability Across Economies</h1>
+            <nav class="nav">
+                <a href="#intro">Overview</a>
+                <a href="#dataset">Dataset</a>
+                <a href="#visualizations">Visualizations</a>
+                <a href="#summary">Summary</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content">
+        <!-- Intro / Overview -->
+        <section id="intro" class="section">
+            <h2>Project Overview</h2>
+            <p>
+                Our project, Predicting Economic Growth and Financial Stability Across Economies, investigates how demographic pressures, labor market conditions, and institutional strength shape economic outcomes across the globe. Using World Bank indicator data from 2013 and 2023, we analyze how key measures including GDP growth, GDP per capita, unemployment, greenhouse gases, labor participation, electricity access, government effectiveness, and birth and death rates vary across regions and how they evolve over a decade of global change. By comparing two economic snapshots ten years apart, we are able to observe where progress has accelerated, where development has slowed, and how improvements in social infrastructure and governance relate to long-term financial stability. This is especially relevant today, as some countries experience sustained economic expansion while others face declining populations, rising unemployment, and underdeveloped infrastructure.
+                Through our different visualizations, we highlight global disparities, identify emerging patterns, and explore the relationship between human development and economic performance. Our goal is not just to measure growth, but to understand why it occurs, revealing how demographic trends, institutional quality, and access to basic resources can shape the trajectory of a nation. By presenting these trends visually, this project offers a structured way to compare countries, uncover correlations, and evaluate what conditions most strongly drive economic growth around the world. To learn more about how developing critical infrastructure influences GDP growth,
+  please visit the <a href="https://www.worldbank.org/ext/en/home" target="_blank" style="color:#3454d1; font-weight:600;">World Bank</a> and read 
+  <a href="https://www.tandfonline.com/doi/abs/10.1080/17487870.2010.523980" target="_blank" style="color:#3454d1; font-weight:600;">
+  this article</a> examining how infrastructure investment contributed to long-term economic development in India.
+            </p>
+        </section>
+
+        <!-- Dataset description -->
+        <section id="dataset" class="section">
+            <h2>Introduction to the Dataset</h2>
+            <p>
+                <p>
+    Our analysis draws on a created dataset sourced from the  
+    (<a href="https://databank.worldbank.org/home" target="_blank" style="color:#3454d1; font-weight:600;">
+    World Bank DataBank<a>), containing roughly 2000 observations and 10 features from 10 different years representing 
+    economic, demographic, environmental, and governance conditions for the years 2013–2023. 
+    The dataset includes key indicators such as GDP per capita, GDP growth, unemployment rate, labor force participation, 
+    government effectiveness, birth and death rates, greenhouse gas emissions, and electricity access, enabling comparisons 
+    between regions and temporal comparisons across a decade of development. By studying the decade between 2013 and 2023, 
+    we can identify which socioeconomic factors are most closely associated with economic growth, and how these relationships 
+    have shifted over time. This dataset serves as the foundation for all five visualizations in this dashboard, and a full 
+    variable glossary is provided in the table below.
+</p>
+
+            </p>
+
+            <table class="dataset-table">
+                <thead>
+                    <tr>
+                        <th>Variable Name</th>
+                        <th>Description </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>birth_rate</td>
+                        <td>Number of live births per 1,000 people in the population.</td>
+                    </tr>
+                    <tr>
+                        <td>death_rate</td>
+                        <td>Number of deaths per 1,000 people in the population.</td>
+                    </tr>
+                    <tr>
+                        <td>gdp</td>
+                        <td>GDP for each country in current $ conversion rates.</td>
+                    </tr>
+                    <tr>
+                        <td>gdp_growth</td>
+                        <td>Annual percentage growth rate of gross domestic product (GDP).</td>
+                    </tr>
+                    <tr>
+                        <td>gdp_pc</td>
+                        <td>GDP per capita in U.S. dollars, capturing average income per person.</td>
+                    </tr>
+                    <tr>
+                        <td>unemp</td>
+                        <td>Unemployment rate (% of the labor force without work but available and seeking employment).</td>
+                    </tr>
+                    <tr>
+                        <td>labor_part</td>
+                        <td>Labor force participation rate (% of the working-age population that is in the labor force).</td>
+                    </tr>
+                    <tr>
+                        <td>gov_eff</td>
+                        <td>Government effectiveness index (roughly -2.5 to +2.5), summarizing quality of public services and policy implementation.</td>
+                    </tr>
+                    <tr>
+                        <td>elec</td>
+                        <td>Percentage of the population with access to electricity.</td>
+                    </tr>
+                    <tr>
+                        <td>ghg</td>
+                        <td>Annual GHG output representing carbon-equivalent emissions from industry, land use, agriculture, and energy production.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Visualizations (injected by JS) -->
+        <section id="visualizations" class="section">
+            <h2>Visualizations</h2>
+            <p class="section-subtitle">
+            </p>
+
+            <!-- JS will inject .viz-card elements here -->
+            <div id="viz-grid" class="viz-grid"></div>
+        </section>
+
+        <!-- Summary / Future Work -->
+        <section id="summary" class="section">
+    <h2>Summary &amp; Future Steps</h2>
+    <p>
+        Across our visualizations, a clear theme emerges about how economic growth, demographic change, and institutional 
+        structure influence one another. Countries with strong governance and widespread infrastructure access tend to 
+        display higher GDP per capita, while regions with weaker public systems remain lower on the income scale. The data 
+        also shows that birth rates decline as living standards improve, and this pattern holds in both 2013 and 2023. 
+        Death rates change more slowly, which suggests that improving life expectancy depends on healthcare capacity and 
+        long-term investment rather than short-term economic expansion. Together, these insights indicate that development 
+        is not purely a matter of increasing output. It is a process shaped by access to energy, workforce participation, 
+        and the ability of institutions to support a growing population.
+    </p>
+    <p>
+        These findings can be expanded into real applications within finance, economic planning, and investment strategy. 
+        Analysts could use the same indicators shown here to evaluate sovereign credit conditions, assess the strength of 
+        emerging markets, or anticipate long-run returns in regions undergoing demographic transition. Economies with aging, 
+        shrinking populations may require greater investment in automation and capital efficiency, while rapidly growing 
+        young populations may require expansion in infrastructure, education, and labor market design to support productivity. 
+        With additional datasets such as foreign investment flows, energy capacity, or education attainment, this portfolio 
+        of visualizations could evolve into a tool for forecasting global growth and guiding long-term allocation decisions. 
+        Understanding how population trends and economic structures move together provides an advantage for anyone who must 
+        invest, plan policy, or evaluate risk in a changing global economy.
+    </p>
+</section>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>
+            DS 4200 &middot; Information Presentation &amp; Data Visualization
+        </p>
+    </footer>
+</body>
+</html>
