@@ -63,7 +63,7 @@ const vizData = [
       This heatmap measures how demographic patterns relate to GDP per capita, GDP growth, unemployment, labor force
       participation, electricity access, and government effectiveness. Birth rates show strong negative correlations
       with income, electrification, and governance in both 2013 and 2023, indicating that wealthy nations with well-built
-      institutions consistently experience lower fertility. This aligns with demographic-transition theory: as income,
+      institutions consistently experience lower fertility. This aligns with demographic transition theory: as income,
       education, and urbanization rise, families tend to have fewer children, and women delay childbirth to pursue
       economic opportunity.
 
