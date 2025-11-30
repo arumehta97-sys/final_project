@@ -12,7 +12,7 @@ const vizData = [
       upper bound has increased to roughly $250,000, indicating growth among the world's wealthiest nations.
       Wealth concentration remains highest in North America, Western Europe, and advanced Asian economies, while
       much of Africa and South Asia continues to fall below $20,000 per person. In contrast, the total GDP map
-      highlights the scale of economic power—China and the United States dominate globally due to sheer market size,
+      highlights the scale of economic power, China and the United States dominate globally due to sheer market size,
       even though many smaller nations exceed them in per-capita wealth. Together, these two views demonstrate that
       prosperity must be evaluated with both national output and personal income in mind.
     `
@@ -70,7 +70,7 @@ const vizData = [
       Death-rate correlations are weaker but still meaningful. Higher mortality is associated with lower income and weaker
       governance, suggesting that health outcomes improve only when infrastructure, sanitation, and healthcare systems
       expand alongside broader development. Unlike birth rates, death rates respond gradually rather than dramatically,
-      implying that reducing mortality requires more than economic expansion alone—it depends on long-term investment in
+      implying that reducing mortality requires more than economic expansion alone, it depends on long-term investment in
       medical capacity, public safety, and food security.
 
       Altogether, the heatmap highlights that demographic trends are both reflections and consequences of development.
@@ -96,7 +96,7 @@ const vizData = [
       education, employment, healthcare, and infrastructure. Countries that fail to expand job markets may face youth
       unemployment and social instability despite population growth.
 
-      The 2013 vs 2023 comparison underscores two diverging futures—aging wealthy nations adapting to lower fertility,
+      The 2013 vs 2023 comparison underscores two diverging futures, aging wealthy nations adapting to lower fertility,
       and emerging regions preparing for dramatic expansion. The decisions governments make today will determine whether
       demographic change becomes an economic advantage or a development strain.
     `
