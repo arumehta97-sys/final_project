@@ -45,7 +45,7 @@ const vizData = [
     description: `
       The small-multiple scatterplots show a consistent threshold pattern: countries with negative government effectiveness
       scores rarely surpass $20,000 GDP per capita, while those with strong governance routinely exceed $40,000–$60,000.
-      Europe displays this most clearly, with high-governance nations (Luxembourg, Switzerland, Norway) surpassing
+      Europe displays this most clearly, with high governance nations (Luxembourg, Switzerland, Norway) surpassing
       $150,000 per person, representing the global income frontier. Between 2013 and 2023, GDP per capita increases in
       many regions, even as governance scores remain relatively flat, suggesting that growth can proceed without parallel
       institutional improvement, though perhaps not indefinitely. Africa and parts of Asia remain concentrated in the
